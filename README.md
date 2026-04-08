@@ -1,4 +1,4 @@
-# 🔬 RAG Research Assistant
+#  RAG Research Assistant
 
 ![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
 ![Streamlit](https://img.oracle.com/badge/Streamlit-1.42+-red.svg)
@@ -21,7 +21,7 @@ This project was built following a professional evolution roadmap to ensure indu
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
 - **🔍 Hybrid Search Engine**: Combines the semantic power of Vector Search (ChromaDB) with the keyword precision of BM25.
 - **🧠 Intelligent Synthesis**: Analyzes your entire document library to find patterns and conflicting information across multiple PDFs.
