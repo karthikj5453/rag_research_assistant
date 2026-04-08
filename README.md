@@ -9,17 +9,48 @@ A professional, production-grade **Retrieval-Augmented Generation (RAG)** system
 
 ---
 
-## 🚀 The 5-Level Architecture
+## 🚀 Architecture & Pipeline Flow
 
-This project was built following a professional evolution roadmap to ensure industry-standard performance and reliability:
+The project implements a state-of-the-art RAG pipeline that evolves through five levels of professional improvement.
 
-1.  **Level 1: Precision Retrieval** - Implemented Two-Stage RAG with Cross-Encoder Re-ranking to significantly improve answer accuracy.
-2.  **Level 2: Engine Performance** - Migrated to a non-blocking `asyncio` architecture and multi-threaded processing for a responsive UI.
-3.  **Level 3: Product Experience** - Added multi-document synthesis and visual PDF page previews for direct source verification.
-4.  **Level 4: Observability** - Integrated **Arize Phoenix** for real-time trace monitoring of LLM calls and retrieval loops.
-5.  **Level 5: Advanced Search** - Implemented **Hybrid Search** (Vector + BM25) and **Multi-Query Expansion** for state-of-the-art recall.
+```mermaid
+graph TD
+    subgraph "Ingestion Phase"
+        A[PDF Docs] --> B[Text Extraction]
+        B --> C[Chunking]
+        C --> D[Vector Embedding]
+        C --> E[BM25 Indexing]
+        D --> F[(ChromaDB)]
+        E --> G[(Keyword Store)]
+    end
+
+    subgraph "Retrieval & Ranking"
+        H[User Query] --> I[Gemini Query Expansion]
+        I --> J[Hybrid Search: Vector + BM25]
+        J --> K[RRF Score Fusion]
+        K --> L[Cross-Encoder Reranking]
+    end
+
+    subgraph "Synthesis & Delivery"
+        L --> M[Gemini 1.5 Flash Synthesis]
+        M --> N[Final Answer + Visual Citations]
+        L & M & J --> O[Arize Phoenix Tracing]
+    end
+```
+
+### 🛠️ Step-by-Step Execution Flow
+
+1.  **Document Ingestion**: PDFs are processed asynchronously. Text is extracted using `PyMuPDF`, split into overlapping chunks, and indexed in two parallel systems: **ChromaDB** for semantic meaning and **Rank-BM25** for exact keyword matching.
+2.  **Query Expansion**: To improve recall, the system uses an LLM to rewrite a single user query into multiple variations, ensuring no relevant context is missed due to wording differences.
+3.  **Hybrid Retrieval**: The system performs a dual-search. It fetches the most semantically similar chunks (Vectors) and the most keyword-relevant chunks (BM25).
+4.  **Reciprocal Rank Fusion (RRF)**: A professional fusion algorithm merges the results from both search methods into a single, optimized ranked list.
+5.  **Cross-Encoder Re-ranking**: The top candidates are re-scored by a specialized Cross-Encoder model. This adds a "second pair of eyes" to verify the relevance of each chunk against the query.
+6.  **Synthesis**: The refined context is passed to Gemini 1.5 Flash, which generates a comprehensive answer with grounded citations.
+7.  **Visual Verification**: The UI renders the specific PDF pages cited, allowing users to verify the information with their own eyes.
+8.  **Observability**: Every single step above is traced in **Arize Phoenix**, providing full transparency into the AI's logic.
 
 ---
+
 
 ##  Key Features
 
