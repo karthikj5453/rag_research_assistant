@@ -9,7 +9,7 @@ A professional, production-grade **Retrieval-Augmented Generation (RAG)** system
 
 ---
 
-## 🚀 Architecture & Pipeline Flow
+##  Architecture & Pipeline Flow
 
 The project implements a state-of-the-art RAG pipeline that evolves through five levels of professional improvement.
 
@@ -54,11 +54,11 @@ graph TD
 
 ##  Key Features
 
-- **🔍 Hybrid Search Engine**: Combines the semantic power of Vector Search (ChromaDB) with the keyword precision of BM25.
-- **🧠 Intelligent Synthesis**: Analyzes your entire document library to find patterns and conflicting information across multiple PDFs.
-- **👁️ Visual Citation**: Instantly render the exact PDF page mentioned in an answer for foolproof verification.
-- **📡 Developer Tracing**: Live dashboard to monitor every detail of the AI's "thought process" using Arize Phoenix.
-- **⚡ Async Architecture**: Built on a solid foundation of Python `asyncio`, making it ready for high-performance usage.
+- ** Hybrid Search Engine**: Combines the semantic power of Vector Search (ChromaDB) with the keyword precision of BM25.
+- ** Intelligent Synthesis**: Analyzes your entire document library to find patterns and conflicting information across multiple PDFs.
+- ** Visual Citation**: Instantly render the exact PDF page mentioned in an answer for foolproof verification.
+- ** Developer Tracing**: Live dashboard to monitor every detail of the AI's "thought process" using Arize Phoenix.
+- ** Async Architecture**: Built on a solid foundation of Python `asyncio`, making it ready for high-performance usage.
 
 ---
 
