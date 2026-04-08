@@ -1,7 +1,7 @@
 #  RAG Research Assistant
 
 ![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
-![Streamlit](https://img.oracle.com/badge/Streamlit-1.42+-red.svg)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.42+-red.svg)
 ![Gemini](https://img.shields.io/badge/Google-Gemini--2.5--Flash-blueviolet.svg)
 ![Phoenix](https://img.shields.io/badge/Arize-Phoenix--Observability-orange.svg)
 
