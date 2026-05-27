@@ -1,40 +1,68 @@
 import os
+import sys
 import fitz  # PyMuPDF
 import chromadb
 import logging
 import asyncio
 import numpy as np
+from contextlib import contextmanager
 from sentence_transformers import SentenceTransformer, CrossEncoder
 from rank_bm25 import BM25Okapi
 import google.generativeai as genai
 from dotenv import load_dotenv
 
+# ─── Fix Windows console encoding for emoji ─────────────────────
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 # ─── LEVEL 4: OBSERVABILITY (PHOENIX) ───────────────────────────
-import phoenix as px
-from phoenix.otel import register
-from openinference.instrumentation.google_genai import GoogleGenAIInstrumentor
-from opentelemetry import trace as otel_trace
+# Phoenix observability is optional — the core RAG pipeline works without it.
+px_session = None
+_phoenix_available = False
 
-# Setup Phoenix and Instrumentation
-print("🚀 Initializing Arize Phoenix Observability...")
 try:
-    px_session = px.launch_app()
-    if px_session is None:
-        px_session = px.active_session()
-    
-    # Standardised Phoenix OTEL Registration
-    tracer_provider = register(
-        project_name="rag-research-assistant",
-        endpoint="http://localhost:6006/v1/traces"
-    )
-    otel_trace.set_tracer_provider(tracer_provider)
-except Exception as e:
-    print(f"⚠️ Phoenix Bridge issue: {e}")
-    px_session = None
+    import phoenix as px
+    from phoenix.otel import register
+    from openinference.instrumentation.google_genai import GoogleGenAIInstrumentor
+    from opentelemetry import trace as otel_trace
 
-# Instrument Gemini SDK
-GoogleGenAIInstrumentor().instrument()
-tracer = otel_trace.get_tracer(__name__)
+    print("[INFO] Initializing Arize Phoenix Observability...")
+    try:
+        px_session = px.launch_app()
+        if px_session is None:
+            px_session = px.active_session()
+
+        tracer_provider = register(
+            project_name="rag-research-assistant",
+            endpoint="http://localhost:6006/v1/traces"
+        )
+        otel_trace.set_tracer_provider(tracer_provider)
+        GoogleGenAIInstrumentor().instrument()
+        _phoenix_available = True
+        print("[INFO] Phoenix Observability initialized successfully.")
+    except Exception as e:
+        print(f"[WARN] Phoenix runtime issue (non-fatal): {e}")
+        px_session = None
+except ImportError as e:
+    print(f"[WARN] Phoenix packages not available (non-fatal): {e}")
+except Exception as e:
+    print(f"[WARN] Phoenix setup failed (non-fatal): {e}")
+
+# ─── No-op tracer fallback when Phoenix is unavailable ───────────
+@contextmanager
+def _noop_span(name):
+    """Fallback context manager that does nothing when Phoenix is not available."""
+    yield None
+
+class _NoopTracer:
+    def start_as_current_span(self, name):
+        return _noop_span(name)
+
+if _phoenix_available:
+    tracer = otel_trace.get_tracer(__name__)
+else:
+    tracer = _NoopTracer()
 
 # ─── LOGGING SETUP ──────────────────────────────────────────────
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
